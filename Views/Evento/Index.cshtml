@@ -1,0 +1,53 @@
+﻿@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<GerenciadorEventos.Models.Eventos>
+
+@{
+    ViewData["Title"] = "Lista de Eventos";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">Lista de Eventos</h3>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Data</th>
+                        <th>Local</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var evento in Model)
+                    {
+                        <tr>
+                            <td>@evento.Nome</td>
+                            <td>@evento.Data.ToShortDateString()</td>
+                            <td>@evento.Local</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@evento.EventoId" class="btn btn-info btn-sm">Detalhes</a>
+                                <a asp-action="Edit" asp-route-id="@evento.EventoId" class="btn btn-warning btn-sm">Editar</a>
+                                <a asp-action="Delete" asp-route-id="@evento.EventoId" class="btn btn-danger btn-sm">Excluir</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <!-- Controles de Paginação -->
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }), new PagedListRenderOptions
+       {
+           DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+           DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+           DisplayLinkToLastPage = PagedListDisplayMode.Always,
+           MaximumPageNumbersToDisplay = 5
+       })
+            <div class="d-flex justify-content-between mt-3">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
+                <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i> Adicionar Evento</a>
+            </div>
+        </div>
+    </div>
+</div>
