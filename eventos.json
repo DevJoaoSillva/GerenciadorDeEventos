@@ -1,0 +1,39 @@
+{
+  "eventos": [
+    {
+      "Nome": "Tech Conference 2025",
+      "Data": "2025-05-20",
+      "Local": "Alfenas - MG"
+    },
+    {
+      "Nome": "Workshop de C#",
+      "Data": "2025-06-15",
+      "Local": "Alfenas - MG"
+    },
+    {
+      "Nome": "Congresso da Computa��o 2025",
+      "Data": "2025-07-10",
+      "Local": "Alfenas - MG"
+    }
+  ],
+  "participantes": [
+    {
+      "Nome": "Jo�o Paulo Silva",
+      "Email": "joaosp@gmail.com",
+      "Telefone": "11999999999",
+      "EventoNome": "Tech Conference 2025"
+    },
+    {
+      "Nome": "Jo�o Cassiano",
+      "Email": "joaocassiano@outlook.com",
+      "Telefone": "22888888888",
+      "EventoNome": "Workshop de C#"
+    },
+    {
+      "Nome": "Thiago Silva",
+      "Email": "thiaguinho@hotmail.com",
+      "Telefone": "33777777777",
+      "EventoNome": "Congresso da Computa��o 2025"
+    }
+  ]
+}

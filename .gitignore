@@ -1,0 +1,23 @@
+# Pastas e arquivos do Visual Studio
+.vs/
+*.csproj.user
+*.suo
+*.user
+*.sln.docstates
+
+# Pastas de build
+bin/
+obj/
+Build/
+
+# Arquivos de log e temporários
+*.log
+*.tmp
+
+# Configurações locais e arquivos sensíveis
+appsettings.Development.json
+secrets.json
+
+# Cache do sistema operacional
+.DS_Store
+Thumbs.db
