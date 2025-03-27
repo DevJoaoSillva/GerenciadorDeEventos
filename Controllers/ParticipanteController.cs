@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using X.PagedList.Extensions;
 
 namespace GerenciadorEventos.Controllers
 {
@@ -15,11 +16,26 @@ namespace GerenciadorEventos.Controllers
         {
             _context = context;
         }
-        public IActionResult Index()
+        public IActionResult Index(int? eventoId, int pagina = 1)
         {
-            var participantes = _context.Participante.Include(p => p.Evento).ToList();
-            return View(participantes);
+            int pageSize = 10;
+
+            var participantes = _context.Participante
+                                        .Include(p => p.Evento)
+                                        .AsQueryable();
+
+            // Se um evento for selecionado, aplica o filtro
+            if (eventoId.HasValue)
+            {
+                participantes = participantes.Where(p => p.EventoId == eventoId.Value);
+            }
+
+            // Passa a lista de eventos para popular o filtro na view
+            ViewBag.Eventos = _context.Evento.ToList();
+
+            return View(participantes.ToPagedList(pagina, pageSize));
         }
+
         [HttpGet]
         public IActionResult Create()
         {
@@ -126,7 +142,7 @@ namespace GerenciadorEventos.Controllers
             participante.Participacao = true;
             _context.SaveChanges();
 
-            return RedirectToAction("Index"); // Redireciona para a lista de participantes
+            return RedirectToAction("Index"); 
         }
 
 
@@ -139,17 +155,14 @@ namespace GerenciadorEventos.Controllers
 
             using (var stream = new MemoryStream())
             {
-                // Definir documento na horizontal
                 var pdf = new Document(PageSize.A4.Rotate(), 50, 50, 50, 50);
                 PdfWriter writer = PdfWriter.GetInstance(pdf, stream);
                 pdf.Open();
 
-                // Criar fontes estilizadas
                 Font titleFont = new Font(Font.FontFamily.HELVETICA, 30, Font.BOLD, BaseColor.BLACK);
                 Font textFont = new Font(Font.FontFamily.HELVETICA, 18, Font.NORMAL, BaseColor.BLACK);
                 Font boldFont = new Font(Font.FontFamily.HELVETICA, 20, Font.BOLD, BaseColor.BLACK);
 
-                // Criar borda decorativa
                 PdfContentByte canvas = writer.DirectContent;
                 Rectangle border = new Rectangle(pdf.PageSize);
                 border.Left += pdf.LeftMargin - 20;
@@ -161,7 +174,6 @@ namespace GerenciadorEventos.Controllers
                 border.Border = Rectangle.BOX;
                 canvas.Rectangle(border);
 
-                // Adicionar título centralizado
                 Paragraph title = new Paragraph("CERTIFICADO DE PARTICIPAÇÃO", titleFont)
                 {
                     Alignment = Element.ALIGN_CENTER,
@@ -169,17 +181,16 @@ namespace GerenciadorEventos.Controllers
                 };
                 pdf.Add(title);
 
-                // Adicionar conteúdo do certificado
                 Paragraph corpo = new Paragraph($"Certificamos que ", textFont)
                 {
                     Alignment = Element.ALIGN_CENTER
                 };
-                corpo.Add(new Chunk(participante.Nome, boldFont)); // Nome em negrito
+                corpo.Add(new Chunk(participante.Nome, boldFont)); 
                 corpo.Add(new Chunk($" participou do evento \"{participante.Evento.Nome}\" fornecido pela Universidade, realizado em {participante.Evento.Data.ToShortDateString()}.", textFont));
                 corpo.SpacingAfter = 50;
                 pdf.Add(corpo);
 
-                // Espaço para assinatura
+                
                 Paragraph assinatura = new Paragraph("_________________________\nOrganização Responsável", textFont)
                 {
                     Alignment = Element.ALIGN_CENTER,
